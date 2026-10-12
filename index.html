@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial & Estate Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; }
+    .tab-btn.active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: bold; }
+  </style>
+</head>
+<body class="p-4 max-w-md mx-auto">
+
+  <h1 class="text-2xl font-bold text-center mb-4 text-blue-400">Financial Suite</h1>
+
+  <!-- Navigation Tabs -->
+  <div class="flex border-b border-gray-700 mb-6 justify-around text-sm">
+    <button onclick="switchTab('kurs')" id="tab-kurs" class="tab-btn active py-2 px-3">💱 Kurs</button>
+    <button onclick="switchTab('warisan')" id="tab-warisan" class="tab-btn py-2 px-3">📜 Warisan</button>
+    <button onclick="switchTab('sbn')" id="tab-sbn" class="tab-btn py-2 px-3">📈 SBN vs KPR</button>
+  </div>
+
+  <!-- TAB 1: KURS -->
+  <div id="section-kurs" class="space-y-4">
+    <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
+      <h2 class="text-lg font-semibold mb-3">Konversi Mata Uang ke IDR</h2>
+      
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-gray-400">USD (Dolar AS)</label>
+          <input type="number" id="usd" value="1" oninput="calcKurs('usd')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-gray-400">EUR (Euro)</label>
+          <input type="number" id="eur" value="0" oninput="calcKurs('eur')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-gray-400">HUF (Forint Hungaria)</label>
+          <input type="number" id="huf" value="0" oninput="calcKurs('huf')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-gray-400">CZK (Koruna Ceko)</label>
+          <input type="number" id="czk" value="0" oninput="calcKurs('czk')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+      </div>
+
+      <div class="mt-4 p-3 bg-blue-950/40 border border-blue-800 rounded-lg">
+        <span class="text-xs text-gray-400">Hasil Konversi:</span>
+        <div id="kurs-result" class="text-xl font-bold text-blue-400 mt-1">Rp 17.921</div>
+      </div>
+
+      <button onclick="syncKurs()" class="w-full mt-3 bg-blue-600 hover:bg-blue-700 py-2 rounded-lg text-sm font-semibold transition">
+        🔄 Sync Kurs Hari Ini
+      </button>
+      <div id="sync-time" class="text-[10px] text-gray-500 text-center mt-2">Terakhir diperbarui: 12 Okt 2026</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: WARISAN -->
+  <div id="section-warisan" class="hidden space-y-4">
+    <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
+      <h2 class="text-lg font-semibold mb-3">Kalkulator Pembagian Waris</h2>
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-gray-400">Total Aset (IDR)</label>
+          <input type="number" id="total-aset" value="1000000000" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-gray-400">Jumlah Anak Laki-Laki</label>
+          <input type="number" id="anak-laki" value="1" min="0" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-gray-400">Jumlah Anak Perempuan</label>
+          <input type="number" id="anak-perempuan" value="1" min="0" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+      </div>
+
+      <div id="waris-result" class="mt-4 space-y-2 text-sm">
+        <!-- Result dynamically injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: SBN VS KPR -->
+  <div id="section-sbn" class="hidden space-y-4">
+    <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
+      <h2 class="text-lg font-semibold mb-3">Simulasi SBN / Bonds vs KPR</h2>
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-gray-400">Modal Investasi / Pinjaman (IDR)</label>
+          <input type="number" id="modal-sbn" value="500000000" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-gray-400">Yield SBN Per Tahun (%)</label>
+          <input type="number" id="yield-sbn" value="6.5" step="0.1" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-gray-400">Bunga KPR Per Tahun (%)</label>
+          <input type="number" id="bunga-kpr" value="8.5" step="0.1" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+        </div>
+      </div>
+
+      <div id="sbn-result" class="mt-4 space-y-2 text-sm">
+        <!-- Result dynamically injected here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Rates base 2026
+    let rates = { usd: 17921, eur: 20042, huf: 54.88, czk: 821.85 };
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      
+      document.getElementById('section-kurs').classList.add('hidden');
+      document.getElementById('section-warisan').classList.add('hidden');
+      document.getElementById('section-sbn').classList.add('hidden');
+      
+      document.getElementById('section-' + tab).classList.remove('hidden');
+    }
+
+    function calcKurs(activeField) {
+      const val = parseFloat(document.getElementById(activeField).value) || 0;
+      let totalIdr = val * rates[activeField];
+
+      ['usd', 'eur', 'huf', 'czk'].forEach(f => {
+        if (f !== activeField) {
+          document.getElementById(f).value = (totalIdr / rates[f]).toFixed(2);
+        }
+      });
+
+      document.getElementById('kurs-result').innerText = 'Rp ' + Math.round(totalIdr).toLocaleString('id-ID');
+    }
+
+    function syncKurs() {
+      // Small simulated real-time fluctuation
+      rates.usd += (Math.random() - 0.5) * 50;
+      rates.eur += (Math.random() - 0.5) * 50;
+      calcKurs('usd');
+      const now = new Date();
+      document.getElementById('sync-time').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')} WIB`;
+    }
+
+    function calcWaris() {
+      const total = parseFloat(document.getElementById('total-aset').value) || 0;
+      const laki = parseInt(document.getElementById('anak-laki').value) || 0;
+      const perempuan = parseInt(document.getElementById('anak-perempuan').value) || 0;
+
+      // Porsi Pasangan (Istri): 1/8 (12.5%)
+      const porsiIstri = total * 0.125;
+      const sisa = total - porsiIstri;
+
+      // Sisa dibagi 2:1 untuk anak laki-laki & perempuan
+      const totalPoin = (laki * 2) + (perempuan * 1);
+      let porsiLaki = totalPoin > 0 ? (sisa * 2) / totalPoin : 0;
+      let porsiPerempuan = totalPoin > 0 ? (sisa * 1) / totalPoin : 0;
+
+      document.getElementById('waris-result').innerHTML = `
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Bagian Pasangan (1/8):</div>
+          <div class="font-bold text-green-400">Rp ${Math.round(porsiIstri).toLocaleString('id-ID')}</div>
+        </div>
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Per Anak Laki-Laki (Porsi 2x):</div>
+          <div class="font-bold text-blue-400">Rp ${Math.round(porsiLaki).toLocaleString('id-ID')}</div>
+        </div>
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Per Anak Perempuan (Porsi 1x):</div>
+          <div class="font-bold text-purple-400">Rp ${Math.round(porsiPerempuan).toLocaleString('id-ID')}</div>
+        </div>
+      `;
+    }
+
+    function calcSBN() {
+      const modal = parseFloat(document.getElementById('modal-sbn').value) || 0;
+      const yieldPct = parseFloat(document.getElementById('yield-sbn').value) || 0;
+      const kprPct = parseFloat(document.getElementById('bunga-kpr').value) || 0;
+
+      const returnSBNBulanan = (modal * (yieldPct / 100)) / 12;
+      const biayaKPRBulanan = (modal * (kprPct / 100)) / 12;
+      const selisih = returnSBNBulanan - biayaKPRBulanan;
+
+      document.getElementById('sbn-result').innerHTML = `
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Passive Income SBN / Bulan:</div>
+          <div class="font-bold text-emerald-400">Rp ${Math.round(returnSBNBulanan).toLocaleString('id-ID')}</div>
+        </div>
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Estimasi Bunga KPR / Bulan:</div>
+          <div class="font-bold text-red-400">Rp ${Math.round(biayaKPRBulanan).toLocaleString('id-ID')}</div>
+        </div>
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Net Difference (Margin Netto):</div>
+          <div class="font-bold ${selisih >= 0 ? 'text-blue-400' : 'text-orange-400'}">
+            Rp ${Math.round(selisih).toLocaleString('id-ID')} / bulan
+          </div>
+        </div>
+      `;
+    }
+
+    // Init
+    calcKurs('usd');
+    calcWaris();
+    calcSBN();
+  </script>
+</body>
+</html>
