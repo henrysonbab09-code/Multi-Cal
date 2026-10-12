@@ -57,35 +57,32 @@
     </div>
   </div>
 
-  <!-- TAB 2: WARISAN -->
+  <!-- TAB 2: WARISAN (PERSENTASE MANUAL) -->
   <div id="section-warisan" class="hidden space-y-4">
     <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-      <h2 class="text-lg font-semibold mb-3 text-blue-300">Kalkulator Pembagian Waris Islam</h2>
+      <h2 class="text-lg font-semibold mb-3 text-blue-300">Kalkulator Pembagian Harta Waris</h2>
       
       <div class="space-y-3 text-sm">
         <div>
-          <label class="block text-gray-400">Total Aset / Harta Waris (IDR)</label>
+          <label class="block text-gray-400">Total Nilai Aset Warisan (IDR)</label>
           <input type="text" id="total-aset" value="1.000.000.000" oninput="formatAndCalcWaris(this)" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1 font-semibold text-white">
         </div>
 
-        <div class="flex items-center justify-between p-2 bg-gray-900 rounded border border-gray-700">
-          <span class="text-gray-300">Ada Pasangan (Istri)?</span>
-          <input type="checkbox" id="ada-istri" checked onchange="calcWaris()" class="w-5 h-5 accent-blue-500">
-        </div>
+        <hr class="border-gray-700 my-2">
 
-        <div class="flex items-center justify-between p-2 bg-gray-900 rounded border border-gray-700">
-          <span class="text-gray-300">Ada Ibu / Mertua?</span>
-          <input type="checkbox" id="ada-ibu" checked onchange="calcWaris()" class="w-5 h-5 accent-blue-500">
+        <div>
+          <label class="block text-gray-400">Penerima 1 (%)</label>
+          <input type="number" id="persen-1" value="50" min="0" max="100" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
 
         <div>
-          <label class="block text-gray-400">Jumlah Anak Laki-Laki</label>
-          <input type="number" id="anak-laki" value="1" min="0" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <label class="block text-gray-400">Penerima 2 (%)</label>
+          <input type="number" id="persen-2" value="25" min="0" max="100" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
 
         <div>
-          <label class="block text-gray-400">Jumlah Anak Perempuan</label>
-          <input type="number" id="anak-perempuan" value="0" min="0" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <label class="block text-gray-400">Penerima 3 (%)</label>
+          <input type="number" id="persen-3" value="25" min="0" max="100" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
       </div>
 
@@ -98,33 +95,29 @@
   <!-- TAB 3: SBN VS KPR -->
   <div id="section-sbn" class="hidden space-y-4">
     <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-      <h2 class="text-lg font-semibold mb-3 text-blue-300">Kalkulator Arbitrase SBN vs KPR</h2>
+      <h2 class="text-lg font-semibold mb-3 text-blue-300">Simulasi Arbitrase Yield SBN vs KPR</h2>
       
       <div class="space-y-3 text-sm">
         <div>
-          <label class="block text-gray-400">Nominal Investasi / Pinjaman KPR (IDR)</label>
+          <label class="block text-gray-400">Modal Utang KPR / Investasi (IDR)</label>
           <input type="text" id="modal-sbn" value="1.000.000.000" oninput="formatAndCalcSBN(this)" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1 font-semibold text-white">
         </div>
         <div>
-          <label class="block text-gray-400">Kupon / Yield SBN Per Tahun (%)</label>
-          <input type="number" id="yield-sbn" value="6.5" step="0.1" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <label class="block text-gray-400">Yield SBN Net Per Tahun (%)</label>
+          <input type="number" id="yield-sbn" value="5.85" step="0.05" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
         <div>
-          <label class="block text-gray-400">Pajak SBN (%)</label>
-          <input type="number" id="pajak-sbn" value="10" step="1" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
-        </div>
-        <div>
-          <label class="block text-gray-400">Bunga KPR Per Tahun (%)</label>
+          <label class="block text-gray-400">Bunga KPR Efektif Per Tahun (%)</label>
           <input type="number" id="bunga-kpr" value="7.5" step="0.1" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
         <div>
-          <label class="block text-gray-400">Tenor KPR (Tahun)</label>
+          <label class="block text-gray-400">Tenor Pinjaman (Tahun)</label>
           <input type="number" id="tenor-kpr" value="10" min="1" max="30" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
       </div>
 
       <div id="sbn-result" class="mt-4 space-y-2 text-sm">
-        <!-- Hasil perhitungan SBN vs KPR -->
+        <!-- Hasil perhitungan -->
       </div>
     </div>
   </div>
@@ -183,7 +176,7 @@
       document.getElementById('sync-time').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')} WIB`;
     }
 
-    // --- WARISAN ---
+    // --- WARISAN (MANUAL PERCENTAGE) ---
     function formatAndCalcWaris(input) {
       let rawVal = parseNumber(input.value);
       input.value = formatNumber(rawVal);
@@ -192,62 +185,32 @@
 
     function calcWaris() {
       const total = parseNumber(document.getElementById('total-aset').value);
-      const adaIstri = document.getElementById('ada-istri').checked;
-      const adaIbu = document.getElementById('ada-ibu').checked;
-      const laki = parseInt(document.getElementById('anak-laki').value) || 0;
-      const perempuan = parseInt(document.getElementById('anak-perempuan').value) || 0;
+      const p1 = parseFloat(document.getElementById('persen-1').value) || 0;
+      const p2 = parseFloat(document.getElementById('persen-2').value) || 0;
+      const p3 = parseFloat(document.getElementById('persen-3').value) || 0;
 
-      let porsiIstri = 0;
-      let porsiIbu = 0;
+      const v1 = total * (p1 / 100);
+      const v2 = total * (p2 / 100);
+      const v3 = total * (p3 / 100);
+      const totalPersen = p1 + p2 + p3;
 
-      // Istri (1/8 jika ada anak)
-      if (adaIstri) {
-        porsiIstri = total * ( (laki > 0 || perempuan > 0) ? (1/8) : (1/4) );
-      }
-
-      // Ibu / Mertua (1/6 jika ada anak)
-      if (adaIbu) {
-        porsiIbu = total * ( (laki > 0 || perempuan > 0) ? (1/6) : (1/3) );
-      }
-
-      let sisa = total - porsiIstri - porsiIbu;
-      if (sisa < 0) sisa = 0;
-
-      const totalPoin = (laki * 2) + (perempuan * 1);
-      let porsiLaki = totalPoin > 0 ? (sisa * 2) / totalPoin : 0;
-      let porsiPerempuan = totalPoin > 0 ? (sisa * 1) / totalPoin : 0;
-
-      let html = '';
-      if (adaIstri) {
-        html += `
-          <div class="p-2 bg-gray-900 rounded border border-gray-700">
-            <div class="text-gray-400">Bagian Istri / Pasangan:</div>
-            <div class="font-bold text-green-400">Rp ${Math.round(porsiIstri).toLocaleString('id-ID')}</div>
-          </div>`;
-      }
-      if (adaIbu) {
-        html += `
-          <div class="p-2 bg-gray-900 rounded border border-gray-700">
-            <div class="text-gray-400">Bagian Ibu / Mertua:</div>
-            <div class="font-bold text-amber-400">Rp ${Math.round(porsiIbu).toLocaleString('id-ID')}</div>
-          </div>`;
-      }
-      if (laki > 0) {
-        html += `
-          <div class="p-2 bg-gray-900 rounded border border-gray-700">
-            <div class="text-gray-400">Per Anak Laki-Laki (Porsi 2x):</div>
-            <div class="font-bold text-blue-400">Rp ${Math.round(porsiLaki).toLocaleString('id-ID')}</div>
-          </div>`;
-      }
-      if (perempuan > 0) {
-        html += `
-          <div class="p-2 bg-gray-900 rounded border border-gray-700">
-            <div class="text-gray-400">Per Anak Perempuan (Porsi 1x):</div>
-            <div class="font-bold text-purple-400">Rp ${Math.round(porsiPerempuan).toLocaleString('id-ID')}</div>
-          </div>`;
-      }
-
-      document.getElementById('waris-result').innerHTML = html || `<div class="text-gray-400">Masukkan data ahli waris.</div>`;
+      document.getElementById('waris-result').innerHTML = `
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Penerima 1 (${p1}%):</div>
+          <div class="font-bold text-blue-400">Rp ${Math.round(v1).toLocaleString('id-ID')}</div>
+        </div>
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Penerima 2 (${p2}%):</div>
+          <div class="font-bold text-green-400">Rp ${Math.round(v2).toLocaleString('id-ID')}</div>
+        </div>
+        <div class="p-2 bg-gray-900 rounded border border-gray-700">
+          <div class="text-gray-400">Penerima 3 (${p3}%):</div>
+          <div class="font-bold text-purple-400">Rp ${Math.round(v3).toLocaleString('id-ID')}</div>
+        </div>
+        <div class="text-xs ${totalPersen === 100 ? 'text-gray-400' : 'text-amber-400'} text-right mt-1">
+          Total Alokasi: ${totalPersen}%
+        </div>
+      `;
     }
 
     // --- SBN VS KPR ---
@@ -260,16 +223,13 @@
     function calcSBN() {
       const modal = parseNumber(document.getElementById('modal-sbn').value);
       const yieldPct = parseFloat(document.getElementById('yield-sbn').value) || 0;
-      const pajakPct = parseFloat(document.getElementById('pajak-sbn').value) || 0;
       const kprPct = parseFloat(document.getElementById('bunga-kpr').value) || 0;
       const tenorTahun = parseInt(document.getElementById('tenor-kpr').value) || 1;
 
-      // Passive income SBN bersih per bulan
-      const kuponKotorTahun = modal * (yieldPct / 100);
-      const kuponBersihTahun = kuponKotorTahun * (1 - (pajakPct / 100));
-      const sbnBulanan = kuponBersihTahun / 12;
+      // Passive income SBN per bulan
+      const sbnBulanan = (modal * (yieldPct / 100)) / 12;
 
-      // Angsuran KPR Anuitas
+      // Angsuran KPR per bulan
       const r = (kprPct / 100) / 12;
       const n = tenorTahun * 12;
       let cicilanKPR = 0;
@@ -279,21 +239,21 @@
         cicilanKPR = modal / (n || 1);
       }
 
-      const netCashflow = sbnBulanan - cicilanKPR;
+      const selisihBulanan = sbnBulanan - cicilanKPR;
 
       document.getElementById('sbn-result').innerHTML = `
         <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Passive Income SBN (Bersih/Bulan):</div>
+          <div class="text-gray-400">Hasil SBN / Bulan:</div>
           <div class="font-bold text-emerald-400">Rp ${Math.round(sbnBulanan).toLocaleString('id-ID')}</div>
         </div>
         <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Cicilan KPR per Bulan (${tenorTahun} Thn):</div>
+          <div class="text-gray-400">Cicilan KPR / Bulan (${tenorTahun} Thn):</div>
           <div class="font-bold text-red-400">Rp ${Math.round(cicilanKPR).toLocaleString('id-ID')}</div>
         </div>
         <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Net Cashflow Bulanan:</div>
-          <div class="font-bold ${netCashflow >= 0 ? 'text-blue-400' : 'text-orange-400'}">
-            Rp ${Math.round(netCashflow).toLocaleString('id-ID')} / bulan
+          <div class="text-gray-400">Net Gap / Selisih Bulanan:</div>
+          <div class="font-bold ${selisihBulanan >= 0 ? 'text-blue-400' : 'text-orange-400'}">
+            Rp ${Math.round(selisihBulanan).toLocaleString('id-ID')} / bulan
           </div>
         </div>
       `;
