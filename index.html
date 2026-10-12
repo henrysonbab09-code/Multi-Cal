@@ -6,16 +6,17 @@
   <title>Financial Suite</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; }
+    body { background-color: #0d1117; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     .tab-btn.active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: bold; }
+    input[type=range] { accent-color: #3b82f6; }
   </style>
 </head>
-<body class="p-4 max-w-md mx-auto">
+<body class="p-4 max-w-md mx-auto pb-12">
 
   <h1 class="text-2xl font-bold text-center mb-4 text-blue-400">Financial Suite</h1>
 
   <!-- Navigation Tabs -->
-  <div class="flex border-b border-gray-700 mb-6 justify-around text-sm">
+  <div class="flex border-b border-gray-800 mb-6 justify-around text-sm">
     <button onclick="switchTab('kurs')" id="tab-kurs" class="tab-btn active py-2 px-3">💱 Kurs</button>
     <button onclick="switchTab('warisan')" id="tab-warisan" class="tab-btn py-2 px-3">📜 Warisan</button>
     <button onclick="switchTab('sbn')" id="tab-sbn" class="tab-btn py-2 px-3">📈 SBN vs KPR</button>
@@ -23,121 +24,225 @@
 
   <!-- TAB 1: KURS -->
   <div id="section-kurs" class="space-y-4">
-    <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-      <h2 class="text-lg font-semibold mb-3 text-blue-300">Konversi Mata Uang ke IDR</h2>
+    <div class="bg-gray-900/90 p-5 rounded-2xl border border-gray-800 shadow-xl">
+      <h2 class="text-lg font-bold mb-3 text-white">Konversi Mata Uang ke IDR</h2>
       
       <div class="space-y-3 text-sm">
         <div>
-          <label class="block text-gray-400">USD (Dolar AS)</label>
-          <input type="text" id="usd" value="1" oninput="formatAndCalcKurs('usd')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <label class="block text-gray-400 mb-1">USD (Dolar AS)</label>
+          <input type="text" id="usd" value="1" oninput="formatAndCalcKurs('usd')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
-          <label class="block text-gray-400">EUR (Euro)</label>
-          <input type="text" id="eur" value="0" oninput="formatAndCalcKurs('eur')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <label class="block text-gray-400 mb-1">EUR (Euro)</label>
+          <input type="text" id="eur" value="0" oninput="formatAndCalcKurs('eur')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
-          <label class="block text-gray-400">HUF (Forint Hungaria)</label>
-          <input type="text" id="huf" value="0" oninput="formatAndCalcKurs('huf')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <label class="block text-gray-400 mb-1">HUF (Forint Hungaria)</label>
+          <input type="text" id="huf" value="0" oninput="formatAndCalcKurs('huf')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
-          <label class="block text-gray-400">CZK (Koruna Ceko)</label>
-          <input type="text" id="czk" value="0" oninput="formatAndCalcKurs('czk')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <label class="block text-gray-400 mb-1">CZK (Koruna Ceko)</label>
+          <input type="text" id="czk" value="0" oninput="formatAndCalcKurs('czk')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
       </div>
 
-      <div class="mt-4 p-3 bg-blue-950/40 border border-blue-800 rounded-lg">
+      <div class="mt-5 p-4 bg-blue-950/30 border border-blue-800/50 rounded-xl">
         <span class="text-xs text-gray-400">Hasil Konversi:</span>
-        <div id="kurs-result" class="text-xl font-bold text-blue-400 mt-1">Rp 17.921</div>
+        <div id="kurs-result" class="text-2xl font-bold text-blue-400 mt-1">Rp 17.921</div>
       </div>
 
-      <button onclick="syncKurs()" class="w-full mt-3 bg-blue-600 hover:bg-blue-700 py-2 rounded-lg text-sm font-semibold transition">
+      <button onclick="syncKurs()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 py-3 rounded-xl text-sm font-semibold transition text-white">
         🔄 Sync Kurs Hari Ini
       </button>
       <div id="sync-time" class="text-[10px] text-gray-500 text-center mt-2">Terakhir diperbarui: 12 Okt 2026</div>
     </div>
   </div>
 
-  <!-- TAB 2: WARISAN (PERSIS GAMBAR) -->
+  <!-- TAB 2: WARISAN (PERSIS GAMBAR SCREENSHOT) -->
   <div id="section-warisan" class="hidden space-y-4">
-    <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-      <h2 class="text-lg font-semibold mb-1 text-white">Kalkulator Pembagian Warisan Tanah</h2>
-      <p class="text-xs text-gray-400 mb-4">Perhitungan otomatis potongan biaya penjualan & jatah waris</p>
+    <div class="bg-gray-900/90 p-5 rounded-2xl border border-gray-800 shadow-xl">
+      <h2 class="text-xl font-bold text-white mb-1">Kalkulator Pembagian Warisan</h2>
+      <p class="text-xs text-gray-400 mb-5">Perhitungan otomatis potongan biaya penjualan & jatah waris</p>
       
       <div class="space-y-4 text-sm">
         <div>
           <label class="block text-gray-300 font-medium mb-1">Masukkan Harga Jual Tanah Kotor</label>
           <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 font-semibold">Rp</span>
-            <input type="text" id="total-aset" value="1.000.000.000" oninput="formatAndCalcWaris(this)" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-10 pr-3 text-lg font-bold text-white focus:outline-none focus:border-blue-500">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-semibold">Rp</span>
+            <input type="text" id="total-aset" value="1.000.000.000" oninput="formatAndCalcWaris(this)" class="w-full bg-black/60 border border-gray-800 rounded-xl py-3 pl-12 pr-4 text-xl font-bold text-white focus:outline-none focus:border-blue-500">
           </div>
         </div>
 
         <div class="text-xs text-gray-400 space-y-2">
           <div class="flex items-center gap-2 flex-wrap">
             <span class="italic font-medium">Biaya Penjualan Fixed (8,5%):</span>
-            <span class="bg-gray-700/60 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600">PPh 2.5%</span>
+            <span class="bg-gray-800 text-gray-300 px-3 py-1 rounded-full border border-gray-700">PPh 2.5%</span>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="bg-gray-700/60 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600">BPHTB 5%</span>
-            <span class="bg-gray-700/60 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600">BBN / Notaris 1%</span>
+            <span class="bg-gray-800 text-gray-300 px-3 py-1 rounded-full border border-gray-700">BPHTB 5%</span>
+            <span class="bg-gray-800 text-gray-300 px-3 py-1 rounded-full border border-gray-700">BBN / Notaris 1%</span>
           </div>
         </div>
 
         <!-- Kartu Net Value -->
-        <div class="bg-blue-900/40 border border-blue-700/60 p-4 rounded-xl shadow-inner">
+        <div class="bg-blue-950/40 border border-blue-800/60 p-4 rounded-2xl shadow-inner mt-4">
           <div class="text-xs text-blue-300 font-medium">Warisan Bersih (Net Value)</div>
-          <div id="net-warisan" class="text-2xl font-extrabold text-white mt-1">Rp 915.000.000</div>
+          <div id="net-warisan" class="text-3xl font-extrabold text-white mt-1">Rp 915.000.000</div>
           <div id="potongan-text" class="text-xs text-blue-300/80 mt-1">Dipotong biaya 8,5% (Rp 85.000.000)</div>
         </div>
 
-        <h3 class="text-base font-semibold text-white pt-2">Rincian Pembagian Ahli Waris</h3>
+        <h3 class="text-base font-bold text-white pt-3">Rincian Pembagian Ahli Waris</h3>
 
         <!-- Kartu Jatah 1 Anak -->
-        <div class="bg-gray-900/80 border border-gray-700 p-4 rounded-xl space-y-1">
+        <div class="bg-black/50 border border-gray-800 p-4 rounded-2xl space-y-1">
           <div class="flex justify-between items-center text-xs text-gray-400">
-            <span class="font-medium text-gray-200">Jatah 1 Anak</span>
+            <span class="font-semibold text-gray-200">Jatah 1 Anak</span>
             <span>1/7 Warisan</span>
           </div>
           <div id="jatah-anak" class="text-2xl font-bold text-blue-400">Rp 130.714.286</div>
-          <div class="text-xs text-gray-400">Total 7 Anak menerima bagian sama rata</div>
+          <div class="text-xs text-gray-500">Total 7 Anak menerima bagian sama rata</div>
         </div>
 
         <!-- Kartu Jatah 1 Cucu -->
-        <div class="bg-gray-900/80 border border-gray-700 p-4 rounded-xl space-y-1">
+        <div class="bg-black/50 border border-gray-800 p-4 rounded-2xl space-y-1">
           <div class="flex justify-between items-center text-xs text-gray-400">
-            <span class="font-medium text-gray-200">Jatah 1 Cucu</span>
+            <span class="font-semibold text-gray-200">Jatah 1 Cucu</span>
             <span>1/4 dari Jatah 1 Anak</span>
           </div>
           <div id="jatah-cucu" class="text-2xl font-bold text-blue-400">Rp 32.678.572</div>
-          <div class="text-xs text-gray-400">Setara 1/28 dari Total Warisan Bersih</div>
+          <div class="text-xs text-gray-500">Setara 1/28 dari Total Warisan Bersih</div>
         </div>
 
       </div>
     </div>
   </div>
 
-  <!-- TAB 3: SBN VS KPR -->
+  <!-- TAB 3: SIMULASI SBN VS KPR (PERSIS GAMBAR) -->
   <div id="section-sbn" class="hidden space-y-4">
-    <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-      <h2 class="text-lg font-semibold mb-3 text-blue-300">Simulasi SBN vs KPR</h2>
-      
-      <div class="space-y-3 text-sm">
-        <div>
-          <label class="block text-gray-400">Modal Investasi / Pinjaman (IDR)</label>
-          <input type="text" id="modal-sbn" value="500.000.000" oninput="formatAndCalcSBN(this)" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1 font-semibold text-white">
-        </div>
-        <div>
-          <label class="block text-gray-400">Yield SBN Per Tahun (%)</label>
-          <input type="number" id="yield-sbn" value="6.5" step="0.1" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
-        </div>
-        <div>
-          <label class="block text-gray-400">Bunga KPR Per Tahun (%)</label>
-          <input type="number" id="bunga-kpr" value="8.5" step="0.1" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
-        </div>
-      </div>
+    <div class="bg-gray-900/90 p-5 rounded-2xl border border-gray-800 shadow-xl">
+      <h2 class="text-xl font-bold text-white mb-1">Simulasi SBN vs KPR</h2>
+      <p class="text-xs text-gray-400 mb-6">Leverage passive income hasil SBN bersih untuk mendanai angsuran KPR Anda secara optimal.</p>
 
-      <div id="sbn-result" class="mt-4 space-y-2 text-sm">
-        <!-- Hasil SBN -->
+      <div class="space-y-5 text-sm">
+        <!-- 1. Modal Penempatan SBN -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-gray-300 font-semibold text-xs">Modal Penempatan SBN</label>
+            <div class="flex items-center gap-1 bg-black/60 px-3 py-1 rounded-lg border border-gray-800">
+              <span class="text-xs text-gray-500 font-semibold">Rp</span>
+              <input type="text" id="modal-sbn-txt" value="2.000.000.000" oninput="syncSBNInputs('modal')" class="w-28 bg-transparent text-right font-bold text-white focus:outline-none text-xs">
+            </div>
+          </div>
+          <input type="range" id="modal-sbn-range" min="100000000" max="10000000000" step="50000000" value="2000000000" oninput="syncSBNInputs('modal-range')" class="w-full">
+        </div>
+
+        <!-- 2. Bunga Kotor SBN -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-gray-300 font-semibold text-xs">Bunga Kotor SBN (p.a.)</label>
+            <div class="flex items-center gap-1 bg-black/60 px-3 py-1 rounded-lg border border-gray-800">
+              <input type="number" id="yield-sbn-txt" value="4.15" step="0.05" oninput="syncSBNInputs('yield')" class="w-16 bg-transparent text-right font-bold text-white focus:outline-none text-xs">
+              <span class="text-xs text-gray-500">%</span>
+            </div>
+          </div>
+          <input type="range" id="yield-sbn-range" min="1" max="12" step="0.05" value="4.15" oninput="syncSBNInputs('yield-range')" class="w-full">
+          <div id="hasil-bersih-sbn-text" class="text-xs font-mono text-emerald-400 mt-1">Hasil Bersih (stlh pajak 10%): 3,74% p.a.</div>
+        </div>
+
+        <!-- 3. Bunga KPR -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-gray-300 font-semibold text-xs">Bunga KPR (p.a.)</label>
+            <div class="flex items-center gap-1 bg-black/60 px-3 py-1 rounded-lg border border-gray-800">
+              <input type="number" id="bunga-kpr-txt" value="6.50" step="0.1" oninput="syncSBNInputs('kpr')" class="w-16 bg-transparent text-right font-bold text-white focus:outline-none text-xs">
+              <span class="text-xs text-gray-500">%</span>
+            </div>
+          </div>
+          <input type="range" id="bunga-kpr-range" min="1" max="15" step="0.1" value="6.50" oninput="syncSBNInputs('kpr-range')" class="w-full">
+        </div>
+
+        <!-- 4. Masa Pinjam / Tenor KPR -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-gray-300 font-semibold text-xs">Masa Pinjam / Tenor KPR</label>
+            <div class="flex items-center gap-1 bg-black/60 px-3 py-1 rounded-lg border border-gray-800">
+              <input type="number" id="tenor-kpr-txt" value="20" min="1" max="30" oninput="syncSBNInputs('tenor')" class="w-12 bg-transparent text-right font-bold text-white focus:outline-none text-xs">
+              <span class="text-xs text-gray-500">Tahun</span>
+            </div>
+          </div>
+          <input type="range" id="tenor-kpr-range" min="1" max="30" step="1" value="20" oninput="syncSBNInputs('tenor-range')" class="w-full">
+        </div>
+
+        <!-- 5. Down Payment (DP) -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-gray-300 font-semibold text-xs">Down Payment (DP)</label>
+            <div class="flex items-center gap-1 bg-black/60 px-3 py-1 rounded-lg border border-gray-800">
+              <input type="number" id="dp-kpr-txt" value="20" min="0" max="90" oninput="syncSBNInputs('dp')" class="w-12 bg-transparent text-right font-bold text-white focus:outline-none text-xs">
+              <span class="text-xs text-gray-500">%</span>
+            </div>
+          </div>
+          <input type="range" id="dp-kpr-range" min="0" max="90" step="1" value="20" oninput="syncSBNInputs('dp-range')" class="w-full">
+          <div id="estimasi-dp-subtext" class="text-xs font-mono text-emerald-400 mt-1">Estimasi DP: Rp 249.394.123</div>
+        </div>
+
+        <!-- Komposisi Pendanaan Bar Chart -->
+        <div class="bg-black/50 border border-gray-800 p-4 rounded-2xl pt-3">
+          <h3 class="text-xs font-semibold text-white mb-3">Komposisi Pendanaan Harga Rumah</h3>
+          <div class="w-full bg-gray-800 h-6 rounded-full overflow-hidden flex">
+            <div id="bar-plafon" class="bg-blue-400 h-full transition-all duration-300" style="width: 80%;"></div>
+            <div id="bar-dp" class="bg-emerald-400 h-full transition-all duration-300" style="width: 20%;"></div>
+          </div>
+          <div class="flex justify-center gap-4 text-[10px] text-gray-400 mt-3 flex-wrap">
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span> Plafon KPR (Pinjaman)</div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Nominal DP (Modal Awal)</div>
+          </div>
+        </div>
+
+        <!-- Ringkasan Hasil Kalkulasi Card -->
+        <div class="bg-blue-600/90 border border-blue-500/50 p-5 rounded-2xl text-white space-y-3 shadow-lg">
+          <div class="text-[11px] font-bold tracking-wider uppercase text-blue-200">RINGKASAN HASIL KALKULASI</div>
+          
+          <div>
+            <div class="text-xs text-blue-100">Maksimal Harga Rumah</div>
+            <div id="res-max-harga" class="text-2xl font-extrabold text-white">Rp 1.084.322.275</div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+            <div>
+              <div class="text-blue-100/80">Total Bunga Bersih/Bln</div>
+              <div id="res-bunga-bersih" class="font-bold text-white text-sm">Rp 6.225.000</div>
+            </div>
+            <div>
+              <div class="text-blue-100/80">Plafon KPR Maksimal</div>
+              <div id="res-plafon-kpr" class="font-bold text-white text-sm">Rp 834.928.152</div>
+            </div>
+          </div>
+
+          <div class="text-xs border-t border-blue-400/40 pt-2">
+            <div class="text-blue-100/80">Estimasi Nominal DP (Rupiah)</div>
+            <div id="res-dp-rupiah" class="font-bold text-white text-sm">Rp 249.394.123</div>
+          </div>
+
+          <!-- Margin Antara Bunga vs Cicilan -->
+          <div class="bg-blue-950/60 border border-blue-400/30 p-3 rounded-xl space-y-1.5 text-xs text-blue-50 mt-2">
+            <div class="font-bold text-blue-200">Margin Bunga vs Cicilan KPR:</div>
+            <div class="flex justify-between">
+              <span>Bunga KPR Murni / Bln:</span>
+              <span id="margin-bunga-kpr" class="font-bold">Rp 4.522.527</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Total Cicilan (Pokok+Bunga) / Bln:</span>
+              <span id="margin-cicilan-kpr" class="font-bold text-amber-300">Rp 6.225.000</span>
+            </div>
+            <div class="flex justify-between border-t border-blue-400/30 pt-1 text-emerald-300 font-bold">
+              <span>Selisih Surplus Bunga SBN:</span>
+              <span id="margin-surplus">Rp +1.702.473</span>
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </div>
   </div>
@@ -166,7 +271,7 @@
       document.getElementById('section-' + tab).classList.remove('hidden');
     }
 
-    // --- KURS ---
+    // --- TAB 1: KURS ---
     function formatAndCalcKurs(activeField) {
       let input = document.getElementById(activeField);
       let rawVal = parseNumber(input.value);
@@ -196,7 +301,7 @@
       document.getElementById('sync-time').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')} WIB`;
     }
 
-    // --- WARISAN (PERSIS RUMUS TANAH & BIAYA 8.5%) ---
+    // --- TAB 2: WARISAN ---
     function formatAndCalcWaris(input) {
       let rawVal = parseNumber(input.value);
       input.value = formatNumber(rawVal);
@@ -205,15 +310,9 @@
 
     function calcWaris() {
       const kotor = parseNumber(document.getElementById('total-aset').value);
-      
-      // Biaya Penjualan Fixed = 8.5%
       const biaya = kotor * 0.085;
       const net = kotor - biaya;
-
-      // Pembagian: 7 Anak (1/7 dari Net)
       const jatahAnak = net / 7;
-
-      // Jatah 1 Cucu (1/4 dari Jatah 1 Anak = 1/28 dari Net)
       const jatahCucu = jatahAnak / 4;
 
       document.getElementById('net-warisan').innerText = 'Rp ' + Math.round(net).toLocaleString('id-ID');
@@ -222,38 +321,94 @@
       document.getElementById('jatah-cucu').innerText = 'Rp ' + Math.round(jatahCucu).toLocaleString('id-ID');
     }
 
-    // --- SBN VS KPR ---
-    function formatAndCalcSBN(input) {
-      let rawVal = parseNumber(input.value);
-      input.value = formatNumber(rawVal);
+    // --- TAB 3: SIMULASI SBN VS KPR ---
+    function syncSBNInputs(source) {
+      let modalTxt = document.getElementById('modal-sbn-txt');
+      let modalRng = document.getElementById('modal-sbn-range');
+      let yieldTxt = document.getElementById('yield-sbn-txt');
+      let yieldRng = document.getElementById('yield-sbn-range');
+      let kprTxt = document.getElementById('bunga-kpr-txt');
+      let kprRng = document.getElementById('bunga-kpr-range');
+      let tenorTxt = document.getElementById('tenor-kpr-txt');
+      let tenorRng = document.getElementById('tenor-kpr-range');
+      let dpTxt = document.getElementById('dp-kpr-txt');
+      let dpRng = document.getElementById('dp-kpr-range');
+
+      if (source === 'modal') { modalRng.value = parseNumber(modalTxt.value); }
+      if (source === 'modal-range') { modalTxt.value = formatNumber(modalRng.value); }
+      if (source === 'yield') { yieldRng.value = yieldTxt.value; }
+      if (source === 'yield-range') { yieldTxt.value = yieldRng.value; }
+      if (source === 'kpr') { kprRng.value = kprTxt.value; }
+      if (source === 'kpr-range') { kprTxt.value = kprRng.value; }
+      if (source === 'tenor') { tenorRng.value = tenorTxt.value; }
+      if (source === 'tenor-range') { tenorTxt.value = tenorRng.value; }
+      if (source === 'dp') { dpRng.value = dpTxt.value; }
+      if (source === 'dp-range') { dpTxt.value = dpRng.value; }
+
+      // re-format modal input text
+      if (source !== 'modal') {
+        modalTxt.value = formatNumber(parseNumber(modalTxt.value));
+      }
+
       calcSBN();
     }
 
     function calcSBN() {
-      const modal = parseNumber(document.getElementById('modal-sbn').value);
-      const yieldPct = parseFloat(document.getElementById('yield-sbn').value) || 0;
-      const kprPct = parseFloat(document.getElementById('bunga-kpr').value) || 0;
+      const modalSBN = parseNumber(document.getElementById('modal-sbn-txt').value);
+      const yieldKotor = parseFloat(document.getElementById('yield-sbn-txt').value) || 0;
+      const bungaKPRPerTahun = parseFloat(document.getElementById('bunga-kpr-txt').value) || 0;
+      const tenorTahun = parseInt(document.getElementById('tenor-kpr-txt').value) || 1;
+      const dpPersen = parseFloat(document.getElementById('dp-kpr-txt').value) || 0;
 
-      const returnSBNBulanan = (modal * (yieldPct / 100)) / 12;
-      const biayaKPRBulanan = (modal * (kprPct / 100)) / 12;
-      const selisih = returnSBNBulanan - biayaKPRBulanan;
+      // Yield Bersih setelah pajak SBN 10%
+      const yieldBersihPa = yieldKotor * 0.9;
+      document.getElementById('hasil-bersih-sbn-text').innerText = `Hasil Bersih (stlh pajak 10%): ${yieldBersihPa.toFixed(2).replace('.', ',')}% p.a.`;
 
-      document.getElementById('sbn-result').innerHTML = `
-        <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Passive Income SBN / Bulan:</div>
-          <div class="font-bold text-emerald-400">Rp ${Math.round(returnSBNBulanan).toLocaleString('id-ID')}</div>
-        </div>
-        <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Estimasi Bunga KPR / Bulan:</div>
-          <div class="font-bold text-red-400">Rp ${Math.round(biayaKPRBulanan).toLocaleString('id-ID')}</div>
-        </div>
-        <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Net Difference (Margin Netto):</div>
-          <div class="font-bold ${selisih >= 0 ? 'text-blue-400' : 'text-orange-400'}">
-            Rp ${Math.round(selisih).toLocaleString('id-ID')} / bulan
-          </div>
-        </div>
-      `;
+      // Total Bunga SBN Bersih per Bulan
+      const bungaSbnBersihBulan = (modalSBN * (yieldBersihPa / 100)) / 12;
+
+      // Perhitungan Plafon KPR yang bisa ditutup oleh Bunga SBN Bersih/Bulan (Cicilan Anuitas = Bunga SBN)
+      const r = (bungaKPRPerTahun / 100) / 12;
+      const n = tenorTahun * 12;
+      
+      let plafonKPR = 0;
+      if (r > 0 && n > 0) {
+        plafonKPR = bungaSbnBersihBulan * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));
+      } else {
+        plafonKPR = bungaSbnBersihBulan * n;
+      }
+
+      // Harga Rumah & DP
+      let maksHargaRumah = 0;
+      let nominalDP = 0;
+      if (dpPersen < 100) {
+        maksHargaRumah = plafonKPR / (1 - (dpPersen / 100));
+        nominalDP = maksHargaRumah * (dpPersen / 100);
+      } else {
+        maksHargaRumah = plafonKPR;
+        nominalDP = 0;
+      }
+
+      // Update Bar Chart
+      document.getElementById('bar-plafon').style.width = (100 - dpPersen) + '%';
+      document.getElementById('bar-dp').style.width = dpPersen + '%';
+
+      // Update Subtext DP
+      document.getElementById('estimasi-dp-subtext').innerText = `Estimasi DP: Rp ${Math.round(nominalDP).toLocaleString('id-ID')}`;
+
+      // Update Ringkasan Hasil Kalkulasi Card
+      document.getElementById('res-max-harga').innerText = 'Rp ' + Math.round(maksHargaRumah).toLocaleString('id-ID');
+      document.getElementById('res-bunga-bersih').innerText = 'Rp ' + Math.round(bungaSbnBersihBulan).toLocaleString('id-ID');
+      document.getElementById('res-plafon-kpr').innerText = 'Rp ' + Math.round(plafonKPR).toLocaleString('id-ID');
+      document.getElementById('res-dp-rupiah').innerText = 'Rp ' + Math.round(nominalDP).toLocaleString('id-ID');
+
+      // Margin Bunga Murni KPR vs Cicilan Total
+      const bungaKprMurniBulan = plafonKPR * r;
+      const selisihSurplus = bungaSbnBersihBulan - bungaKprMurniBulan;
+
+      document.getElementById('margin-bunga-kpr').innerText = 'Rp ' + Math.round(bungaKprMurniBulan).toLocaleString('id-ID');
+      document.getElementById('margin-cicilan-kpr').innerText = 'Rp ' + Math.round(bungaSbnBersihBulan).toLocaleString('id-ID');
+      document.getElementById('margin-surplus').innerText = 'Rp +' + Math.round(selisihSurplus).toLocaleString('id-ID');
     }
 
     // Init
