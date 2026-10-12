@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Financial & Estate Tools</title>
+  <title>Financial Suite</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; }
@@ -29,19 +29,19 @@
       <div class="space-y-3 text-sm">
         <div>
           <label class="block text-gray-400">USD (Dolar AS)</label>
-          <input type="number" id="usd" value="1" oninput="calcKurs('usd')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <input type="text" id="usd" value="1" oninput="formatAndCalcKurs('usd')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
         <div>
           <label class="block text-gray-400">EUR (Euro)</label>
-          <input type="number" id="eur" value="0" oninput="calcKurs('eur')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <input type="text" id="eur" value="0" oninput="formatAndCalcKurs('eur')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
         <div>
           <label class="block text-gray-400">HUF (Forint Hungaria)</label>
-          <input type="number" id="huf" value="0" oninput="calcKurs('huf')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <input type="text" id="huf" value="0" oninput="formatAndCalcKurs('huf')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
         <div>
           <label class="block text-gray-400">CZK (Koruna Ceko)</label>
-          <input type="number" id="czk" value="0" oninput="calcKurs('czk')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <input type="text" id="czk" value="0" oninput="formatAndCalcKurs('czk')" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
         </div>
       </div>
 
@@ -64,7 +64,7 @@
       <div class="space-y-3 text-sm">
         <div>
           <label class="block text-gray-400">Total Aset (IDR)</label>
-          <input type="number" id="total-aset" value="1000000000" oninput="calcWaris()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <input type="text" id="total-aset" value="1.000.000.000" oninput="formatAndCalcWaris(this)" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1 font-semibold text-white">
         </div>
         <div>
           <label class="block text-gray-400">Jumlah Anak Laki-Laki</label>
@@ -77,7 +77,7 @@
       </div>
 
       <div id="waris-result" class="mt-4 space-y-2 text-sm">
-        <!-- Result dynamically injected here -->
+        <!-- Hasil perhitungan -->
       </div>
     </div>
   </div>
@@ -89,7 +89,7 @@
       <div class="space-y-3 text-sm">
         <div>
           <label class="block text-gray-400">Modal Investasi / Pinjaman (IDR)</label>
-          <input type="number" id="modal-sbn" value="500000000" oninput="calcSBN()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1">
+          <input type="text" id="modal-sbn" value="500.000.000" oninput="formatAndCalcSBN(this)" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1 font-semibold text-white">
         </div>
         <div>
           <label class="block text-gray-400">Yield SBN Per Tahun (%)</label>
@@ -102,14 +102,24 @@
       </div>
 
       <div id="sbn-result" class="mt-4 space-y-2 text-sm">
-        <!-- Result dynamically injected here -->
+        <!-- Hasil perhitungan -->
       </div>
     </div>
   </div>
 
   <script>
-    // Rates base 2026
     let rates = { usd: 17921, eur: 20042, huf: 54.88, czk: 821.85 };
+
+    // Format angka dengan titik pemisah ribuan
+    function formatNumber(val) {
+      let clean = val.toString().replace(/\D/g, '');
+      if (!clean) return '';
+      return parseInt(clean, 10).toLocaleString('id-ID');
+    }
+
+    function parseNumber(val) {
+      return parseFloat(val.toString().replace(/\./g, '').replace(/,/g, '.')) || 0;
+    }
 
     function switchTab(tab) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -122,13 +132,21 @@
       document.getElementById('section-' + tab).classList.remove('hidden');
     }
 
-    function calcKurs(activeField) {
-      const val = parseFloat(document.getElementById(activeField).value) || 0;
+    function formatAndCalcKurs(activeField) {
+      let input = document.getElementById(activeField);
+      let rawVal = parseNumber(input.value);
+      input.value = formatNumber(rawVal);
+      calcKurs(activeField, rawVal);
+    }
+
+    function calcKurs(activeField, rawVal) {
+      const val = rawVal !== undefined ? rawVal : parseNumber(document.getElementById(activeField).value);
       let totalIdr = val * rates[activeField];
 
       ['usd', 'eur', 'huf', 'czk'].forEach(f => {
         if (f !== activeField) {
-          document.getElementById(f).value = (totalIdr / rates[f]).toFixed(2);
+          let converted = (totalIdr / rates[f]);
+          document.getElementById(f).value = converted > 0 ? formatNumber(Math.round(converted)) : '0';
         }
       });
 
@@ -136,24 +154,27 @@
     }
 
     function syncKurs() {
-      // Small simulated real-time fluctuation
       rates.usd += (Math.random() - 0.5) * 50;
       rates.eur += (Math.random() - 0.5) * 50;
-      calcKurs('usd');
+      formatAndCalcKurs('usd');
       const now = new Date();
       document.getElementById('sync-time').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')} WIB`;
     }
 
+    function formatAndCalcWaris(input) {
+      let rawVal = parseNumber(input.value);
+      input.value = formatNumber(rawVal);
+      calcWaris();
+    }
+
     function calcWaris() {
-      const total = parseFloat(document.getElementById('total-aset').value) || 0;
+      const total = parseNumber(document.getElementById('total-aset').value);
       const laki = parseInt(document.getElementById('anak-laki').value) || 0;
       const perempuan = parseInt(document.getElementById('anak-perempuan').value) || 0;
 
-      // Porsi Pasangan (Istri): 1/8 (12.5%)
       const porsiIstri = total * 0.125;
       const sisa = total - porsiIstri;
 
-      // Sisa dibagi 2:1 untuk anak laki-laki & perempuan
       const totalPoin = (laki * 2) + (perempuan * 1);
       let porsiLaki = totalPoin > 0 ? (sisa * 2) / totalPoin : 0;
       let porsiPerempuan = totalPoin > 0 ? (sisa * 1) / totalPoin : 0;
@@ -174,8 +195,14 @@
       `;
     }
 
+    function formatAndCalcSBN(input) {
+      let rawVal = parseNumber(input.value);
+      input.value = formatNumber(rawVal);
+      calcSBN();
+    }
+
     function calcSBN() {
-      const modal = parseFloat(document.getElementById('modal-sbn').value) || 0;
+      const modal = parseNumber(document.getElementById('modal-sbn').value);
       const yieldPct = parseFloat(document.getElementById('yield-sbn').value) || 0;
       const kprPct = parseFloat(document.getElementById('bunga-kpr').value) || 0;
 
@@ -202,7 +229,7 @@
     }
 
     // Init
-    calcKurs('usd');
+    formatAndCalcKurs('usd');
     calcWaris();
     calcSBN();
   </script>
