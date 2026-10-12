@@ -13,7 +13,7 @@
 </head>
 <body class="p-4 max-w-md mx-auto pb-12 relative">
 
-  <!-- Toast Notification (Hidden by default) -->
+  <!-- Toast Notification -->
   <div id="toast-notif" class="fixed top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2 z-50 border border-emerald-400/30">
     <span>✅</span>
     <span>Data kurs berhasil di-synced!</span>
@@ -57,7 +57,6 @@
         <div id="kurs-result" class="text-2xl font-bold text-blue-400 mt-1">Rp 17.921</div>
       </div>
 
-      <!-- Interaktif Sync Button -->
       <button id="sync-btn" onclick="syncKurs()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white flex items-center justify-center gap-2">
         <span id="sync-icon">🔄</span>
         <span id="sync-text">Sync Kurs Hari Ini</span>
@@ -222,19 +221,20 @@
             <div id="res-dp-rupiah" class="font-bold text-white text-sm">Rp 249.394.123</div>
           </div>
 
+          <!-- Margin SBN vs Cicilan KPR -->
           <div class="bg-blue-950/60 border border-blue-400/30 p-3 rounded-xl space-y-1.5 text-xs text-blue-50 mt-2">
-            <div class="font-bold text-blue-200">Margin Bunga vs Cicilan KPR:</div>
+            <div class="font-bold text-blue-200">Margin SBN vs Cicilan KPR:</div>
             <div class="flex justify-between">
-              <span>Bunga KPR Murni / Bln:</span>
-              <span id="margin-bunga-kpr" class="font-bold">Rp 4.522.527</span>
+              <span>Bunga SBN Bersih / Bln:</span>
+              <span id="margin-bunga-sbn" class="font-bold text-emerald-300">Rp 6.225.000</span>
             </div>
             <div class="flex justify-between">
-              <span>Total Cicilan (Pokok+Bunga) / Bln:</span>
+              <span>Total Cicilan KPR / Bln:</span>
               <span id="margin-cicilan-kpr" class="font-bold text-amber-300">Rp 6.225.000</span>
             </div>
-            <div class="flex justify-between border-t border-blue-400/30 pt-1 text-emerald-300 font-bold">
-              <span>Selisih Surplus Bunga SBN:</span>
-              <span id="margin-surplus">Rp +1.702.473</span>
+            <div class="flex justify-between border-t border-blue-400/30 pt-1 text-white font-bold">
+              <span>Net Cashflow / Bln:</span>
+              <span id="margin-net-cashflow" class="text-emerald-300">Rp 0</span>
             </div>
           </div>
 
@@ -296,15 +296,12 @@
       const text = document.getElementById('sync-text');
       const toast = document.getElementById('toast-notif');
 
-      // 1. Ubah tombol jadi abu-abu (disabled state)
       btn.disabled = true;
       btn.className = "w-full mt-4 bg-gray-700 cursor-wait py-3 rounded-xl text-sm font-semibold text-gray-400 flex items-center justify-center gap-2 transition-all duration-200";
       icon.className = "animate-spin";
       text.innerText = "Memproses Sync...";
 
-      // 2. Simulasi proses fetch data sync (1 detik)
       setTimeout(() => {
-        // Fluktuasi kurs
         rates.usd += (Math.random() - 0.5) * 50;
         rates.eur += (Math.random() - 0.5) * 50;
         formatAndCalcKurs('usd');
@@ -312,13 +309,11 @@
         const now = new Date();
         document.getElementById('sync-time').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')} WIB`;
 
-        // 3. Kembalikan warna tombol ke biru
         btn.disabled = false;
         btn.className = "w-full mt-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white flex items-center justify-center gap-2";
         icon.className = "";
         text.innerText = "Sync Kurs Hari Ini";
 
-        // 4. Tampilkan Notifikasi Toast
         toast.classList.remove('opacity-0', 'pointer-events-none');
         toast.classList.add('opacity-100');
 
@@ -403,6 +398,13 @@
         plafonKPR = bungaSbnBersihBulan * n;
       }
 
+      let cicilanKPRBulan = 0;
+      if (r > 0 && n > 0) {
+        cicilanKPRBulan = plafonKPR * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      } else {
+        cicilanKPRBulan = plafonKPR / (n || 1);
+      }
+
       let maksHargaRumah = 0;
       let nominalDP = 0;
       if (dpPersen < 100) {
@@ -423,12 +425,12 @@
       document.getElementById('res-plafon-kpr').innerText = 'Rp ' + Math.round(plafonKPR).toLocaleString('id-ID');
       document.getElementById('res-dp-rupiah').innerText = 'Rp ' + Math.round(nominalDP).toLocaleString('id-ID');
 
-      const bungaKprMurniBulan = plafonKPR * r;
-      const selisihSurplus = bungaSbnBersihBulan - bungaKprMurniBulan;
+      // Margin Bunga SBN Bersih vs Total Cicilan KPR
+      const netCashflow = bungaSbnBersihBulan - cicilanKPRBulan;
 
-      document.getElementById('margin-bunga-kpr').innerText = 'Rp ' + Math.round(bungaKprMurniBulan).toLocaleString('id-ID');
-      document.getElementById('margin-cicilan-kpr').innerText = 'Rp ' + Math.round(bungaSbnBersihBulan).toLocaleString('id-ID');
-      document.getElementById('margin-surplus').innerText = 'Rp +' + Math.round(selisihSurplus).toLocaleString('id-ID');
+      document.getElementById('margin-bunga-sbn').innerText = 'Rp ' + Math.round(bungaSbnBersihBulan).toLocaleString('id-ID');
+      document.getElementById('margin-cicilan-kpr').innerText = 'Rp ' + Math.round(cicilanKPRBulan).toLocaleString('id-ID');
+      document.getElementById('margin-net-cashflow').innerText = (netCashflow >= 0 ? 'Rp +' : 'Rp ') + Math.round(netCashflow).toLocaleString('id-ID');
     }
 
     // Init
