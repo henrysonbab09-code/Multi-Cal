@@ -57,20 +57,61 @@
     </div>
   </div>
 
-  <!-- TAB 2: WARISAN (FIX PORSI) -->
+  <!-- TAB 2: WARISAN (PERSIS GAMBAR) -->
   <div id="section-warisan" class="hidden space-y-4">
     <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-      <h2 class="text-lg font-semibold mb-3 text-blue-300">Kalkulator Pembagian Waris</h2>
+      <h2 class="text-lg font-semibold mb-1 text-white">Kalkulator Pembagian Warisan Tanah</h2>
+      <p class="text-xs text-gray-400 mb-4">Perhitungan otomatis potongan biaya penjualan & jatah waris</p>
       
-      <div class="space-y-3 text-sm">
+      <div class="space-y-4 text-sm">
         <div>
-          <label class="block text-gray-400">Total Aset (IDR)</label>
-          <input type="text" id="total-aset" value="1.000.000.000" oninput="formatAndCalcWaris(this)" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-1 font-semibold text-white">
+          <label class="block text-gray-300 font-medium mb-1">Masukkan Harga Jual Tanah Kotor</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 font-semibold">Rp</span>
+            <input type="text" id="total-aset" value="1.000.000.000" oninput="formatAndCalcWaris(this)" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-10 pr-3 text-lg font-bold text-white focus:outline-none focus:border-blue-500">
+          </div>
         </div>
-      </div>
 
-      <div id="waris-result" class="mt-4 space-y-2 text-sm">
-        <!-- Hasil perhitungan waris otomatis -->
+        <div class="text-xs text-gray-400 space-y-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="italic font-medium">Biaya Penjualan Fixed (8,5%):</span>
+            <span class="bg-gray-700/60 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600">PPh 2.5%</span>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="bg-gray-700/60 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600">BPHTB 5%</span>
+            <span class="bg-gray-700/60 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600">BBN / Notaris 1%</span>
+          </div>
+        </div>
+
+        <!-- Kartu Net Value -->
+        <div class="bg-blue-900/40 border border-blue-700/60 p-4 rounded-xl shadow-inner">
+          <div class="text-xs text-blue-300 font-medium">Warisan Bersih (Net Value)</div>
+          <div id="net-warisan" class="text-2xl font-extrabold text-white mt-1">Rp 915.000.000</div>
+          <div id="potongan-text" class="text-xs text-blue-300/80 mt-1">Dipotong biaya 8,5% (Rp 85.000.000)</div>
+        </div>
+
+        <h3 class="text-base font-semibold text-white pt-2">Rincian Pembagian Ahli Waris</h3>
+
+        <!-- Kartu Jatah 1 Anak -->
+        <div class="bg-gray-900/80 border border-gray-700 p-4 rounded-xl space-y-1">
+          <div class="flex justify-between items-center text-xs text-gray-400">
+            <span class="font-medium text-gray-200">Jatah 1 Anak</span>
+            <span>1/7 Warisan</span>
+          </div>
+          <div id="jatah-anak" class="text-2xl font-bold text-blue-400">Rp 130.714.286</div>
+          <div class="text-xs text-gray-400">Total 7 Anak menerima bagian sama rata</div>
+        </div>
+
+        <!-- Kartu Jatah 1 Cucu -->
+        <div class="bg-gray-900/80 border border-gray-700 p-4 rounded-xl space-y-1">
+          <div class="flex justify-between items-center text-xs text-gray-400">
+            <span class="font-medium text-gray-200">Jatah 1 Cucu</span>
+            <span>1/4 dari Jatah 1 Anak</span>
+          </div>
+          <div id="jatah-cucu" class="text-2xl font-bold text-blue-400">Rp 32.678.572</div>
+          <div class="text-xs text-gray-400">Setara 1/28 dari Total Warisan Bersih</div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -96,7 +137,7 @@
       </div>
 
       <div id="sbn-result" class="mt-4 space-y-2 text-sm">
-        <!-- Hasil perhitungan SBN -->
+        <!-- Hasil SBN -->
       </div>
     </div>
   </div>
@@ -155,7 +196,7 @@
       document.getElementById('sync-time').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')} WIB`;
     }
 
-    // --- WARISAN (AUTO-CALCULATE DENGAN PORSI FIX) ---
+    // --- WARISAN (PERSIS RUMUS TANAH & BIAYA 8.5%) ---
     function formatAndCalcWaris(input) {
       let rawVal = parseNumber(input.value);
       input.value = formatNumber(rawVal);
@@ -163,35 +204,22 @@
     }
 
     function calcWaris() {
-      const total = parseNumber(document.getElementById('total-aset').value);
+      const kotor = parseNumber(document.getElementById('total-aset').value);
+      
+      // Biaya Penjualan Fixed = 8.5%
+      const biaya = kotor * 0.085;
+      const net = kotor - biaya;
 
-      // Porsi Tetap: Istri (1/8 = 12.5%), Ibu (1/6 = 16.67%)
-      const porsiIstri = total * (1/8);
-      const porsiIbu = total * (1/6);
-      const sisa = total - porsiIstri - porsiIbu;
+      // Pembagian: 7 Anak (1/7 dari Net)
+      const jatahAnak = net / 7;
 
-      // Sisa harta dibagi (2 porsi Anak Laki, 1 porsi Anak Perempuan = total 3 bagian)
-      const porsiAnakLaki = (sisa * 2) / 3;
-      const porsiAnakPerempuan = (sisa * 1) / 3;
+      // Jatah 1 Cucu (1/4 dari Jatah 1 Anak = 1/28 dari Net)
+      const jatahCucu = jatahAnak / 4;
 
-      document.getElementById('waris-result').innerHTML = `
-        <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Bagian Pasangan / Istri (1/8):</div>
-          <div class="font-bold text-green-400">Rp ${Math.round(porsiIstri).toLocaleString('id-ID')}</div>
-        </div>
-        <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Bagian Ibu / Mertua (1/6):</div>
-          <div class="font-bold text-amber-400">Rp ${Math.round(porsiIbu).toLocaleString('id-ID')}</div>
-        </div>
-        <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Bagian Anak Laki-Laki (Porsi 2x):</div>
-          <div class="font-bold text-blue-400">Rp ${Math.round(porsiAnakLaki).toLocaleString('id-ID')}</div>
-        </div>
-        <div class="p-2 bg-gray-900 rounded border border-gray-700">
-          <div class="text-gray-400">Bagian Anak Perempuan (Porsi 1x):</div>
-          <div class="font-bold text-purple-400">Rp ${Math.round(porsiAnakPerempuan).toLocaleString('id-ID')}</div>
-        </div>
-      `;
+      document.getElementById('net-warisan').innerText = 'Rp ' + Math.round(net).toLocaleString('id-ID');
+      document.getElementById('potongan-text').innerText = `Dipotong biaya 8,5% (Rp ${Math.round(biaya).toLocaleString('id-ID')})`;
+      document.getElementById('jatah-anak').innerText = 'Rp ' + Math.round(jatahAnak).toLocaleString('id-ID');
+      document.getElementById('jatah-cucu').innerText = 'Rp ' + Math.round(jatahCucu).toLocaleString('id-ID');
     }
 
     // --- SBN VS KPR ---
