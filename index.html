@@ -36,50 +36,50 @@
     <div class="bg-gray-900/90 p-5 rounded-2xl border border-gray-800 shadow-xl">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-lg font-bold text-white">Konversi Mata Uang ke IDR</h2>
-        <span id="rate-badge" class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-md font-semibold">Live ECB API</span>
+        <span id="rate-badge" class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-md font-semibold">Live Market</span>
       </div>
       
       <div class="space-y-3 text-sm">
         <div>
           <div class="flex justify-between text-xs text-gray-400 mb-1">
             <label>USD (Dolar AS)</label>
-            <span id="info-usd" class="text-gray-500">1 USD = Rp 17.921</span>
+            <span id="info-usd" class="text-gray-400 font-medium">1 USD = Rp 16.850</span>
           </div>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" id="usd" value="1" oninput="formatAndCalcKurs('usd')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
+          <input type="text" inputmode="decimal" id="usd" value="1" oninput="formatAndCalcKurs('usd')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
           <div class="flex justify-between text-xs text-gray-400 mb-1">
             <label>EUR (Euro)</label>
-            <span id="info-eur" class="text-gray-500">1 EUR = Rp 20.042</span>
+            <span id="info-eur" class="text-gray-400 font-medium">1 EUR = Rp 18.350</span>
           </div>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" id="eur" value="0" oninput="formatAndCalcKurs('eur')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
+          <input type="text" inputmode="decimal" id="eur" value="0" oninput="formatAndCalcKurs('eur')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
           <div class="flex justify-between text-xs text-gray-400 mb-1">
             <label>HUF (Forint Hungaria)</label>
-            <span id="info-huf" class="text-gray-500">1 HUF = Rp 54,88</span>
+            <span id="info-huf" class="text-gray-400 font-medium">1 HUF = Rp 45,20</span>
           </div>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" id="huf" value="0" oninput="formatAndCalcKurs('huf')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
+          <input type="text" inputmode="decimal" id="huf" value="0" oninput="formatAndCalcKurs('huf')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
           <div class="flex justify-between text-xs text-gray-400 mb-1">
             <label>CZK (Koruna Ceko)</label>
-            <span id="info-czk" class="text-gray-500">1 CZK = Rp 821,85</span>
+            <span id="info-czk" class="text-gray-400 font-medium">1 CZK = Rp 725,50</span>
           </div>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" id="czk" value="0" oninput="formatAndCalcKurs('czk')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
+          <input type="text" inputmode="decimal" id="czk" value="0" oninput="formatAndCalcKurs('czk')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
       </div>
 
       <div class="mt-5 p-4 bg-blue-950/30 border border-blue-800/50 rounded-xl">
         <span class="text-xs text-gray-400">Hasil Konversi (IDR):</span>
-        <div id="kurs-result" class="text-2xl font-bold text-blue-400 mt-1">Rp 17.921</div>
+        <div id="kurs-result" class="text-2xl font-bold text-blue-400 mt-1">Rp 16.850</div>
       </div>
 
       <button id="sync-btn" onclick="syncKurs()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white flex items-center justify-center gap-2">
         <span id="sync-icon">🔄</span>
         <span id="sync-text">Sync Kurs Live Hari Ini</span>
       </button>
-      <div id="sync-time" class="text-[10px] text-gray-500 text-center mt-2">Belum di-sync</div>
+      <div id="sync-time" class="text-[10px] text-gray-500 text-center mt-2">Menunggu sync...</div>
     </div>
   </div>
 
@@ -262,7 +262,6 @@
   </div>
 
   <script>
-    // Default fallback rates jika offline
     let rates = JSON.parse(localStorage.getItem('saved_rates')) || { 
       usd: 16850, 
       eur: 18350, 
@@ -299,13 +298,29 @@
       document.getElementById('section-' + tab).classList.remove('hidden');
     }
 
-    // --- TAB 1: KURS & LIVE API SYNC ---
+    // --- TAB 1: KURS & MULTI-API LIVE SYNC ---
     function formatAndCalcKurs(activeField) {
       lastActiveField = activeField;
       let input = document.getElementById(activeField);
-      let rawVal = parseNumber(input.value);
-      input.value = formatNumber(rawVal);
-      calcKurs(activeField, rawVal);
+      let rawStr = input.value.replace(/[^0-9.,]/g, '');
+      
+      // Allow typing decimal separator smoothly
+      if (rawStr.endsWith(',') || rawStr.endsWith('.')) {
+        calcKurs(activeField, parseNumber(rawStr));
+        return;
+      }
+
+      let parts = rawStr.split(/[.,]/);
+      let intPart = parts[0].replace(/\D/g, '');
+      let formattedInt = intPart ? parseInt(intPart, 10).toLocaleString('id-ID') : '';
+      
+      if (parts.length > 1) {
+        input.value = formattedInt + ',' + parts[1].replace(/\D/g, '').slice(0, 2);
+      } else {
+        input.value = formattedInt;
+      }
+
+      calcKurs(activeField, parseNumber(input.value));
     }
 
     function calcKurs(activeField, rawVal) {
@@ -314,8 +329,14 @@
 
       ['usd', 'eur', 'huf', 'czk'].forEach(f => {
         if (f !== activeField) {
-          let converted = (totalIdr / rates[f]);
-          document.getElementById(f).value = converted > 0 ? formatNumber(Math.round(converted)) : '0';
+          let converted = totalIdr / rates[f];
+          if (converted === 0) {
+            document.getElementById(f).value = '0';
+          } else if (converted < 10) {
+            document.getElementById(f).value = converted.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          } else {
+            document.getElementById(f).value = Math.round(converted).toLocaleString('id-ID');
+          }
         }
       });
 
@@ -337,7 +358,7 @@
       }, 3000);
     }
 
-    // Tarik data kurs asli dari Frankfurter API (European Central Bank)
+    // Fetch dengan 2 Server API (Primary: ExchangeRate-API, Backup: jsDelivr Currency CDN)
     async function syncKurs(silent = false) {
       const btn = document.getElementById('sync-btn');
       const icon = document.getElementById('sync-icon');
@@ -350,42 +371,72 @@
         text.innerText = "Mengambil Kurs Live...";
       }
 
+      let success = false;
+      let sourceLabel = '';
+
+      // Server 1: Open ExchangeRate-API (Base USD)
       try {
-        // Fetch kurs dengan basis EUR ke IDR, USD, HUF, CZK
-        const response = await fetch('https://api.frankfurter.app/latest?from=EUR&to=IDR,USD,HUF,CZK');
-        if (!response.ok) throw new Error('Network error');
-        const data = await response.json();
+        const res1 = await fetch('https://open.er-api.com/v6/latest/USD');
+        if (res1.ok) {
+          const data1 = await res1.json();
+          if (data1 && data1.rates && data1.rates.IDR) {
+            const usdToIdr = data1.rates.IDR;
+            rates.usd = usdToIdr;
+            rates.eur = usdToIdr / data1.rates.EUR;
+            rates.huf = usdToIdr / data1.rates.HUF;
+            rates.czk = usdToIdr / data1.rates.CZK;
+            success = true;
+            sourceLabel = 'ExchangeRate-API';
+          }
+        }
+      } catch (e) {
+        console.warn('Primary API failed, trying backup...', e);
+      }
 
-        // Hitung nilai tukar masing-masing mata uang ke IDR
-        const eurToIdr = data.rates.IDR;
-        rates.eur = eurToIdr;
-        rates.usd = eurToIdr / data.rates.USD;
-        rates.huf = eurToIdr / data.rates.HUF;
-        rates.czk = eurToIdr / data.rates.CZK;
+      // Server 2 (Backup CDN): Fawazahmed0 Currency API via jsDelivr
+      if (!success) {
+        try {
+          const res2 = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+          if (res2.ok) {
+            const data2 = await res2.json();
+            if (data2 && data2.usd && data2.usd.idr) {
+              const usdToIdr = data2.usd.idr;
+              rates.usd = usdToIdr;
+              rates.eur = usdToIdr / data2.usd.eur;
+              rates.huf = usdToIdr / data2.usd.huf;
+              rates.czk = usdToIdr / data2.usd.czk;
+              success = true;
+              sourceLabel = 'Global Currency CDN';
+            }
+          }
+        } catch (e2) {
+          console.error('Backup API also failed:', e2);
+        }
+      }
 
+      if (success) {
         localStorage.setItem('saved_rates', JSON.stringify(rates));
         updateRateLabels();
         formatAndCalcKurs(lastActiveField);
 
         const now = new Date();
         const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('sync-time').innerText = `Live ECB (${data.date}) • Synced ${timeStr} WIB`;
+        document.getElementById('sync-time').innerText = `Live (${sourceLabel}) • Synced ${timeStr} WIB`;
 
         if (!silent) {
           showToast('Kurs live terbaru berhasil di-synced!', true);
         }
-      } catch (error) {
-        console.error('Gagal fetch kurs:', error);
+      } else {
         if (!silent) {
-          showToast('Gagal terhubung ke server kurs, memakai data tersimpan.', false);
+          showToast('Koneksi bermasalah, memakai data tersimpan.', false);
         }
-      } finally {
-        if (!silent) {
-          btn.disabled = false;
-          btn.className = "w-full mt-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white flex items-center justify-center gap-2";
-          icon.className = "";
-          text.innerText = "Sync Kurs Live Hari Ini";
-        }
+      }
+
+      if (!silent) {
+        btn.disabled = false;
+        btn.className = "w-full mt-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white flex items-center justify-center gap-2";
+        icon.className = "";
+        text.innerText = "Sync Kurs Live Hari Ini";
       }
     }
 
@@ -496,7 +547,7 @@
       document.getElementById('margin-net-cashflow').innerText = (netCashflow >= 0 ? 'Rp +' : 'Rp ') + Math.round(netCashflow).toLocaleString('id-ID');
     }
 
-    // Init & Auto-Sync saat aplikasi dibuka
+    // Init & Auto-Sync
     updateRateLabels();
     formatAndCalcKurs('usd');
     calcWaris();
