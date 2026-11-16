@@ -17,9 +17,9 @@
 <body class="p-4 max-w-md mx-auto pb-12 relative">
 
   <!-- Toast Notification -->
-  <div id="toast-notif" class="fixed top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2 z-50 border border-emerald-400/30">
-    <span>✅</span>
-    <span>Data kurs berhasil di-synced!</span>
+  <div id="toast-notif" class="fixed top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2 z-50 border border-emerald-400/30 w-max max-w-[90%]">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">Kurs live berhasil di-synced!</span>
   </div>
 
   <h1 class="text-2xl font-bold text-center mb-4 text-blue-400">Financial Suite</h1>
@@ -34,37 +34,52 @@
   <!-- TAB 1: KURS -->
   <div id="section-kurs" class="space-y-4">
     <div class="bg-gray-900/90 p-5 rounded-2xl border border-gray-800 shadow-xl">
-      <h2 class="text-lg font-bold mb-3 text-white">Konversi Mata Uang ke IDR</h2>
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-lg font-bold text-white">Konversi Mata Uang ke IDR</h2>
+        <span id="rate-badge" class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-md font-semibold">Live ECB API</span>
+      </div>
       
       <div class="space-y-3 text-sm">
         <div>
-          <label class="block text-gray-400 mb-1">USD (Dolar AS)</label>
+          <div class="flex justify-between text-xs text-gray-400 mb-1">
+            <label>USD (Dolar AS)</label>
+            <span id="info-usd" class="text-gray-500">1 USD = Rp 17.921</span>
+          </div>
           <input type="text" inputmode="numeric" pattern="[0-9]*" id="usd" value="1" oninput="formatAndCalcKurs('usd')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
-          <label class="block text-gray-400 mb-1">EUR (Euro)</label>
+          <div class="flex justify-between text-xs text-gray-400 mb-1">
+            <label>EUR (Euro)</label>
+            <span id="info-eur" class="text-gray-500">1 EUR = Rp 20.042</span>
+          </div>
           <input type="text" inputmode="numeric" pattern="[0-9]*" id="eur" value="0" oninput="formatAndCalcKurs('eur')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
-          <label class="block text-gray-400 mb-1">HUF (Forint Hungaria)</label>
+          <div class="flex justify-between text-xs text-gray-400 mb-1">
+            <label>HUF (Forint Hungaria)</label>
+            <span id="info-huf" class="text-gray-500">1 HUF = Rp 54,88</span>
+          </div>
           <input type="text" inputmode="numeric" pattern="[0-9]*" id="huf" value="0" oninput="formatAndCalcKurs('huf')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
         <div>
-          <label class="block text-gray-400 mb-1">CZK (Koruna Ceko)</label>
+          <div class="flex justify-between text-xs text-gray-400 mb-1">
+            <label>CZK (Koruna Ceko)</label>
+            <span id="info-czk" class="text-gray-500">1 CZK = Rp 821,85</span>
+          </div>
           <input type="text" inputmode="numeric" pattern="[0-9]*" id="czk" value="0" oninput="formatAndCalcKurs('czk')" class="w-full bg-black/60 border border-gray-800 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-blue-500">
         </div>
       </div>
 
       <div class="mt-5 p-4 bg-blue-950/30 border border-blue-800/50 rounded-xl">
-        <span class="text-xs text-gray-400">Hasil Konversi:</span>
+        <span class="text-xs text-gray-400">Hasil Konversi (IDR):</span>
         <div id="kurs-result" class="text-2xl font-bold text-blue-400 mt-1">Rp 17.921</div>
       </div>
 
       <button id="sync-btn" onclick="syncKurs()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white flex items-center justify-center gap-2">
         <span id="sync-icon">🔄</span>
-        <span id="sync-text">Sync Kurs Hari Ini</span>
+        <span id="sync-text">Sync Kurs Live Hari Ini</span>
       </button>
-      <div id="sync-time" class="text-[10px] text-gray-500 text-center mt-2">Terakhir diperbarui: 12 Okt 2026</div>
+      <div id="sync-time" class="text-[10px] text-gray-500 text-center mt-2">Belum di-sync</div>
     </div>
   </div>
 
@@ -224,7 +239,6 @@
             <div id="res-dp-rupiah" class="font-bold text-white text-sm">Rp 249.394.123</div>
           </div>
 
-          <!-- Margin SBN vs Cicilan KPR -->
           <div class="bg-blue-950/60 border border-blue-400/30 p-3 rounded-xl space-y-1.5 text-xs text-blue-50 mt-2">
             <div class="font-bold text-blue-200">Margin SBN vs Cicilan KPR:</div>
             <div class="flex justify-between">
@@ -248,7 +262,14 @@
   </div>
 
   <script>
-    let rates = { usd: 17921, eur: 20042, huf: 54.88, czk: 821.85 };
+    // Default fallback rates jika offline
+    let rates = JSON.parse(localStorage.getItem('saved_rates')) || { 
+      usd: 16850, 
+      eur: 18350, 
+      huf: 45.20, 
+      czk: 725.50 
+    };
+    let lastActiveField = 'usd';
 
     function formatNumber(val) {
       let clean = val.toString().replace(/\D/g, '');
@@ -258,6 +279,13 @@
 
     function parseNumber(val) {
       return parseFloat(val.toString().replace(/\./g, '').replace(/,/g, '.')) || 0;
+    }
+
+    function updateRateLabels() {
+      document.getElementById('info-usd').innerText = `1 USD = Rp ${Math.round(rates.usd).toLocaleString('id-ID')}`;
+      document.getElementById('info-eur').innerText = `1 EUR = Rp ${Math.round(rates.eur).toLocaleString('id-ID')}`;
+      document.getElementById('info-huf').innerText = `1 HUF = Rp ${rates.huf.toFixed(2).replace('.', ',')}`;
+      document.getElementById('info-czk').innerText = `1 CZK = Rp ${rates.czk.toFixed(2).replace('.', ',')}`;
     }
 
     function switchTab(tab) {
@@ -271,8 +299,9 @@
       document.getElementById('section-' + tab).classList.remove('hidden');
     }
 
-    // --- TAB 1: KURS & INTERACTIVE SYNC ---
+    // --- TAB 1: KURS & LIVE API SYNC ---
     function formatAndCalcKurs(activeField) {
+      lastActiveField = activeField;
       let input = document.getElementById(activeField);
       let rawVal = parseNumber(input.value);
       input.value = formatNumber(rawVal);
@@ -293,39 +322,71 @@
       document.getElementById('kurs-result').innerText = 'Rp ' + Math.round(totalIdr).toLocaleString('id-ID');
     }
 
-    function syncKurs() {
+    function showToast(msg, isSuccess = true) {
+      const toast = document.getElementById('toast-notif');
+      const toastIcon = document.getElementById('toast-icon');
+      const toastMsg = document.getElementById('toast-msg');
+
+      toastIcon.innerText = isSuccess ? '✅' : '⚠️';
+      toastMsg.innerText = msg;
+      toast.className = `fixed top-5 left-1/2 -translate-x-1/2 ${isSuccess ? 'bg-emerald-600 border-emerald-400/30' : 'bg-amber-600 border-amber-400/30'} text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-2xl transition-all duration-300 opacity-100 flex items-center gap-2 z-50 border w-max max-w-[90%]`;
+
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    // Tarik data kurs asli dari Frankfurter API (European Central Bank)
+    async function syncKurs(silent = false) {
       const btn = document.getElementById('sync-btn');
       const icon = document.getElementById('sync-icon');
       const text = document.getElementById('sync-text');
-      const toast = document.getElementById('toast-notif');
 
-      btn.disabled = true;
-      btn.className = "w-full mt-4 bg-gray-700 cursor-wait py-3 rounded-xl text-sm font-semibold text-gray-400 flex items-center justify-center gap-2 transition-all duration-200";
-      icon.className = "animate-spin";
-      text.innerText = "Memproses Sync...";
+      if (!silent) {
+        btn.disabled = true;
+        btn.className = "w-full mt-4 bg-gray-700 cursor-wait py-3 rounded-xl text-sm font-semibold text-gray-400 flex items-center justify-center gap-2 transition-all duration-200";
+        icon.className = "animate-spin";
+        text.innerText = "Mengambil Kurs Live...";
+      }
 
-      setTimeout(() => {
-        rates.usd += (Math.random() - 0.5) * 50;
-        rates.eur += (Math.random() - 0.5) * 50;
-        formatAndCalcKurs('usd');
+      try {
+        // Fetch kurs dengan basis EUR ke IDR, USD, HUF, CZK
+        const response = await fetch('https://api.frankfurter.app/latest?from=EUR&to=IDR,USD,HUF,CZK');
+        if (!response.ok) throw new Error('Network error');
+        const data = await response.json();
+
+        // Hitung nilai tukar masing-masing mata uang ke IDR
+        const eurToIdr = data.rates.IDR;
+        rates.eur = eurToIdr;
+        rates.usd = eurToIdr / data.rates.USD;
+        rates.huf = eurToIdr / data.rates.HUF;
+        rates.czk = eurToIdr / data.rates.CZK;
+
+        localStorage.setItem('saved_rates', JSON.stringify(rates));
+        updateRateLabels();
+        formatAndCalcKurs(lastActiveField);
 
         const now = new Date();
-        document.getElementById('sync-time').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')} WIB`;
+        const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('sync-time').innerText = `Live ECB (${data.date}) • Synced ${timeStr} WIB`;
 
-        btn.disabled = false;
-        btn.className = "w-full mt-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white flex items-center justify-center gap-2";
-        icon.className = "";
-        text.innerText = "Sync Kurs Hari Ini";
-
-        toast.classList.remove('opacity-0', 'pointer-events-none');
-        toast.classList.add('opacity-100');
-
-        setTimeout(() => {
-          toast.classList.remove('opacity-100');
-          toast.classList.add('opacity-0', 'pointer-events-none');
-        }, 2500);
-
-      }, 1000);
+        if (!silent) {
+          showToast('Kurs live terbaru berhasil di-synced!', true);
+        }
+      } catch (error) {
+        console.error('Gagal fetch kurs:', error);
+        if (!silent) {
+          showToast('Gagal terhubung ke server kurs, memakai data tersimpan.', false);
+        }
+      } finally {
+        if (!silent) {
+          btn.disabled = false;
+          btn.className = "w-full mt-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-white flex items-center justify-center gap-2";
+          icon.className = "";
+          text.innerText = "Sync Kurs Live Hari Ini";
+        }
+      }
     }
 
     // --- TAB 2: WARISAN ---
@@ -435,10 +496,12 @@
       document.getElementById('margin-net-cashflow').innerText = (netCashflow >= 0 ? 'Rp +' : 'Rp ') + Math.round(netCashflow).toLocaleString('id-ID');
     }
 
-    // Init
+    // Init & Auto-Sync saat aplikasi dibuka
+    updateRateLabels();
     formatAndCalcKurs('usd');
     calcWaris();
     calcSBN();
+    syncKurs(true);
   </script>
 </body>
 </html>
