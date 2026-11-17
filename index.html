@@ -273,10 +273,11 @@
     function formatNumber(val) {
       let clean = val.toString().replace(/\D/g, '');
       if (!clean) return '';
-      return parseInt(clean, 10).toLocaleString('id-ID');
+      return Number(clean).toLocaleString('id-ID');
     }
 
     function parseNumber(val) {
+      if (!val) return 0;
       return parseFloat(val.toString().replace(/\./g, '').replace(/,/g, '.')) || 0;
     }
 
@@ -298,24 +299,31 @@
       document.getElementById('section-' + tab).classList.remove('hidden');
     }
 
-    // --- TAB 1: KURS & MULTI-API LIVE SYNC ---
+    // --- TAB 1: KURS (UNLIMITED DIGITS, TITIK RIBUAN, KOMA DESIMAL) ---
     function formatAndCalcKurs(activeField) {
       lastActiveField = activeField;
       let input = document.getElementById(activeField);
-      let rawStr = input.value.replace(/[^0-9.,]/g, '');
-      
-      // Allow typing decimal separator smoothly
-      if (rawStr.endsWith(',') || rawStr.endsWith('.')) {
-        calcKurs(activeField, parseNumber(rawStr));
+      let rawStr = input.value;
+
+      // Hapus semua titik pemisah ribuan lama terlebih dahulu
+      let withoutDots = rawStr.replace(/\./g, '');
+      // Hanya izinkan angka dan koma (koma = desimal)
+      let cleaned = withoutDots.replace(/[^0-9,]/g, '');
+
+      if (!cleaned) {
+        input.value = '';
+        calcKurs(activeField, 0);
         return;
       }
 
-      let parts = rawStr.split(/[.,]/);
-      let intPart = parts[0].replace(/\D/g, '');
-      let formattedInt = intPart ? parseInt(intPart, 10).toLocaleString('id-ID') : '';
-      
+      // Pisahkan hanya berdasarkan KOMA (bukan titik) agar puluhan ribu ke atas tidak terpotong
+      let parts = cleaned.split(',');
+      let intPart = parts[0];
+      let formattedInt = intPart ? Number(intPart).toLocaleString('id-ID') : '0';
+
       if (parts.length > 1) {
-        input.value = formattedInt + ',' + parts[1].replace(/\D/g, '').slice(0, 2);
+        // Jika pengguna mengetik koma, pertahankan bagian desimalnya
+        input.value = formattedInt + ',' + parts[1].slice(0, 4);
       } else {
         input.value = formattedInt;
       }
@@ -358,7 +366,6 @@
       }, 3000);
     }
 
-    // Fetch dengan 2 Server API (Primary: ExchangeRate-API, Backup: jsDelivr Currency CDN)
     async function syncKurs(silent = false) {
       const btn = document.getElementById('sync-btn');
       const icon = document.getElementById('sync-icon');
@@ -374,7 +381,6 @@
       let success = false;
       let sourceLabel = '';
 
-      // Server 1: Open ExchangeRate-API (Base USD)
       try {
         const res1 = await fetch('https://open.er-api.com/v6/latest/USD');
         if (res1.ok) {
@@ -389,11 +395,8 @@
             sourceLabel = 'ExchangeRate-API';
           }
         }
-      } catch (e) {
-        console.warn('Primary API failed, trying backup...', e);
-      }
+      } catch (e) {}
 
-      // Server 2 (Backup CDN): Fawazahmed0 Currency API via jsDelivr
       if (!success) {
         try {
           const res2 = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
@@ -409,9 +412,7 @@
               sourceLabel = 'Global Currency CDN';
             }
           }
-        } catch (e2) {
-          console.error('Backup API also failed:', e2);
-        }
+        } catch (e2) {}
       }
 
       if (success) {
